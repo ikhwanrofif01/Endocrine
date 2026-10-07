@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Medical Study Companion — Patologi Endokrin I</title>
+<style>
+:root{
+  --bg:#f5f7fa;--card:#fff;--text:#17212b;--muted:#667382;--line:#dfe5eb;
+  --primary:#245b70;--primary2:#397f8f;--soft:#eaf3f5;--danger:#9b3d3d;
+  --warn:#9a6b12;--success:#28734d;--shadow:0 8px 24px rgba(24,45,60,.08)
+}
+[data-theme="dark"]{
+  --bg:#11181d;--card:#182229;--text:#e8eef1;--muted:#aab7bf;--line:#2b3941;
+  --primary:#74b9c9;--primary2:#8bd0dd;--soft:#20353d;--danger:#e58c8c;
+  --warn:#e3bd69;--success:#73c99c;--shadow:0 8px 24px rgba(0,0,0,.25)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:inherit}.wrap{max-width:1120px;margin:auto;padding:0 18px}
+header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:white;padding:42px 0 34px}
+header h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.1;margin:8px 0 12px}
+header p{margin:0;opacity:.92}.eyebrow{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800;opacity:.8}
+.toolbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;gap:8px;overflow:auto;padding:10px 0;scrollbar-width:none}.nav a{white-space:nowrap;text-decoration:none;padding:7px 11px;border-radius:999px;font-size:.84rem;color:var(--muted)}.nav a:hover{background:var(--soft);color:var(--primary)}
+.actions{display:flex;gap:8px;padding:10px 0}.btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:700}.btn.primary{background:var(--primary);color:white;border-color:var(--primary)}
+.progress{height:5px;background:var(--line)}#progressBar{height:100%;width:0;background:var(--primary2);transition:.2s}
+section{padding:28px 0}.section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:15px}.section-title h2{margin:0;font-size:1.45rem}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:17px;box-shadow:var(--shadow)}
+.card h3,.card h4{margin-top:0}.badge{display:inline-block;padding:4px 9px;border-radius:999px;font-size:.72rem;font-weight:800;margin-bottom:8px}
+.critical{background:#f6dddd;color:var(--danger)}.high{background:#f8edcf;color:var(--warn)}.moderate{background:var(--soft);color:var(--primary)}
+.callout{border-left:4px solid var(--primary);background:var(--soft);padding:13px 15px;border-radius:0 12px 12px 0;margin:12px 0}
+.trap{border-left-color:var(--danger)}.success{border-left-color:var(--success)}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--soft)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin:9px 0}summary{cursor:pointer;font-weight:800}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.node{background:var(--soft);padding:9px 12px;border-radius:10px;font-weight:700}.arrow{color:var(--muted)}
+.searchbox{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);margin-bottom:12px}
+.quiz{margin:15px 0}.option{display:block;padding:10px;border:1px solid var(--line);border-radius:10px;margin:7px 0;cursor:pointer}.option:hover{background:var(--soft)}
+.feedback{display:none;margin-top:12px;padding:13px;border-radius:11px;background:var(--soft)}.feedback.show{display:block}
+.score{font-size:1.1rem;font-weight:800}.check{color:var(--success)}.wrong{color:var(--danger)}
+.quick{position:fixed;right:15px;bottom:15px;border-radius:50%;width:45px;height:45px;border:0;background:var(--primary);color:white;font-size:1.2rem;cursor:pointer}
+.kicker{font-weight:800;color:var(--primary)}ul{padding-left:21px}
+@media(max-width:760px){.grid,.grid2{grid-template-columns:1fr}.wrap{padding:0 13px}header{padding:30px 0 25px}section{padding:22px 0}.nav a{font-size:.78rem}.card{padding:14px}table{font-size:.86rem}}
+</style>
+</head>
+<body>
+<header id="top">
+<div class="wrap">
+<div class="eyebrow">Interactive Medical Study Companion</div>
+<h1>Patologi Endokrin I<br>Hipofisis &amp; Pankreas</h1>
+<p>Modul belajar berbasis file kuliah • fokus high-yield, clinical reasoning, active recall, dan pola soal.</p>
+<div class="actions">
+<button class="btn" onclick="toggleTheme()">🌙 / ☀️ Mode</button>
+<button class="btn" onclick="window.print()">🖨️ Print</button>
+</div>
+</div>
+</header>
+<div class="toolbar">
+<div class="wrap">
+<div class="nav">
+<a href="#objectives">Objectives</a><a href="#mapping">Mapping</a><a href="#highyield">High-Yield</a><a href="#pituitary">Hipofisis</a><a href="#craniopharyngioma">Craniopharyngioma</a><a href="#pancreas">Pankreas</a><a href="#ddx">Pembeda</a><a href="#quiz">Quiz</a><a href="#quick">5-Min Review</a>
+</div>
+<div class="progress"><div id="progressBar"></div></div>
+</div>
+</div>
+
+<main class="wrap">
+<section id="objectives">
+<div class="section-title"><h2>🎯 Learning Objectives</h2><span class="muted">Checklist belajar</span></div>
+<div class="card"><ul>
+<li>Menjelaskan pembagian lobus hipofisis dan hormon adenohipofisis yang dicantumkan dalam materi.</li>
+<li>Mengenali karakteristik hiperpituitarisme dan adenoma hipofisis berdasarkan tipe sel, hormon, epidemiologi, serta manifestasi klinis.</li>
+<li>Membedakan mikroadenoma dan makroadenoma serta memahami gambaran makroskopis dan mikroskopis adenoma.</li>
+<li>Menjelaskan penyebab hipopituitarisme yang tercantum dalam materi.</li>
+<li>Mengenali craniopharyngioma berdasarkan usia, asal, gejala, serta gambaran mikroskopis tipe adamantinomatous dan papillary.</li>
+<li>Membedakan gambaran patologis pankreatitis akut dan kronik serta komplikasi pankreatitis kronik.</li>
+<li>Mengenali kelompok neoplasma pankreas, faktor risiko dan gambaran mikroskopis pancreatic ductal adenocarcinoma.</li>
+<li>Menghubungkan clue klinis dan patologis menjadi clinical reasoning untuk soal pilihan ganda.</li>
+</ul></div>
+</section>
+
+<section id="mapping">
+<div class="section-title"><h2>🗺️ Topic Mapping</h2><span class="muted">Berdasarkan isi file</span></div>
+<table><tr><th>Topik</th><th>Subtopik utama</th><th>Fokus ujian</th></tr>
+<tr><td>Hipofisis</td><td>Hiperpituitarisme, adenoma, hipopituitarisme, sindroma posterior, tumor hipotalamik/supraselar</td><td>Sel → hormon → manifestasi → morfologi</td></tr>
+<tr><td>Craniopharyngioma</td><td>Adamantinomatous &amp; papillary</td><td>Usia + kalsifikasi/keratin/kistik + histologi</td></tr>
+<tr><td>Pankreas</td><td>Akut &amp; kronik</td><td>Inflamasi vs fibrosis/atrofi/ductal concretions + komplikasi</td></tr>
+<tr><td>Neoplasma pankreas</td><td>Cystic &amp; solid neoplasms, ductal adenocarcinoma</td><td>Risk factors + histologi + pemeriksaan diagnosis</td></tr>
+</table>
+</section>
+
+<section id="highyield">
+<div class="section-title"><h2>🔥 High-Yield Topics</h2><span class="muted">Prioritas belajar</span></div>
+<div class="grid">
+<div class="card"><span class="badge critical">🔥🔥🔥 CRITICAL</span><h3>Prolaktinoma</h3><p>Amenore, galaktore, infertilitas, libido ↓. Merupakan adenohipofisis fungsional yang paling sering dalam tabel materi.</p></div>
+<div class="card"><span class="badge critical">🔥🔥🔥 CRITICAL</span><h3>GH-cell adenoma</h3><p>Produksi GH berkaitan dengan gigantisme dan akromegali; pahami hubungan hormon → manifestasi.</p></div>
+<div class="card"><span class="badge critical">🔥🔥🔥 CRITICAL</span><h3>Craniopharyngioma</h3><p>Clue utama: sakit kepala + gangguan penglihatan; bedakan tipe adamantinomatous dan papillary.</p></div>
+<div class="card"><span class="badge high">🔥🔥 HIGH</span><h3>Chronic pancreatitis</h3><p>Fibrosis, atrofi asinus, duktus melebar dengan konkresi; komplikasi termasuk pseudokista, malabsorpsi, steatorrhea, diabetes sekunder.</p></div>
+<div class="card"><span class="badge high">🔥🔥 HIGH</span><h3>Pancreatic ductal adenocarcinoma</h3><p>Faktor risiko yang dicantumkan: tobacco abuse, chronic pancreatitis, hereditary pancreatitis, diet tinggi lemak/daging, chemical carcinogens, PanIN.</p></div>
+<div class="card"><span class="badge high">🔥🔥 HIGH</span><h3>Hipopituitarisme</h3><p>Dalam materi dikaitkan dengan kerusakan ≥75% parenkim dan dapat disertai disfungsi hipofisis posterior.</p></div>
+</div>
+<div class="callout"><b>⚠️ Common Trap:</b> jangan hanya menghafalkan nama penyakit. Pada soal, cari kombinasi <b>usia + gejala + hormon + gambaran makro/mikro</b>.</div>
+</section>
+
+<section id="pituitary">
+<div class="section-title"><h2>🧠 Core Theory — Hipofisis</h2></div>
+<div class="grid2">
+<div class="card"><h3>Struktur &amp; hormon adenohipofisis</h3>
+<p>Materi menyebut adenohipofisis sekitar <b>80%</b> dan neurohipofisis sekitar <b>20%</b>.</p>
+<table><tr><th>Sel</th><th>Sifat</th><th>Hormon</th></tr>
+<tr><td>Somatotrophs</td><td>Acidophilic</td><td>GH</td></tr>
+<tr><td>Lactotrophs</td><td>Acidophilic</td><td>Prl</td></tr>
+<tr><td>Corticotrophs</td><td>Basophilic</td><td>ACTH, MSH</td></tr>
+<tr><td>Thyrotrophs</td><td>Basophilic</td><td>TSH</td></tr>
+<tr><td>Gonadotrophs</td><td>Basophilic</td><td>FSH, LH</td></tr>
+</table></div>
+<div class="card"><h3>Hiperpituitarisme &amp; adenoma</h3>
+<ul><li>Hiperpituitarisme = sekresi berlebihan hormon trofik.</li><li>Adenoma merupakan neoplasma yang paling sering pada hipofisis anterior.</li><li>Disebut 10–15% dari seluruh neoplasma intrakranial dalam materi.</li><li>Mikroadenoma &lt;10 mm; makroadenoma &gt;10 mm.</li><li>Makros: lunak dan berbatas tegas.</li><li>Mikros: sel poligonal seragam, tersusun dalam lembaran/papila; monomorfisme dan hilangnya jaringan retikulin membantu membedakan dari hipofisis anterior non-neoplastik.</li></ul></div>
+</div>
+<details><summary>📌 Prolactinoma</summary>
+<ul><li>Adenohipofisis fungsional yang paling sering menurut tabel materi.</li><li>L:P 1:2,6; usia 21–40 tahun.</li><li>Manifestasi: amenore, galaktore, infertilitas, libido ↓.</li><li>Makro: mikroadenoma, lunak, coklat kemerahan.</li><li>Mikro: sparsely granulated prolactin cell adenoma; kadang terdapat psammoma body; imunoperoksidase positif.</li></ul>
+</details>
+<details><summary>📌 GH-cell adenoma</summary>
+<ul><li>Adenohipofisis fungsional tersering kedua dalam tabel.</li><li>Anak dan dewasa usia 25–35 tahun.</li><li>Manifestasi: gigantisme dan akromegali.</li><li>Makro: mikroadenoma–makroadenoma, lunak, putih–abu-abu.</li><li>Mikro: densely &amp; sparsely granulated; PAS–Orange G positif.</li></ul>
+</details>
+<details><summary>📌 ACTH-cell adenoma</summary>
+<ul><li>Jarang pada anak, usia 30–40 tahun, L:P 1:8.</li><li>Manifestasi: hiperkortisolisme (sindrom Cushing).</li><li>Makro: mikroadenoma.</li><li>Mikro: densely &amp; sparsely granulated, banyak pembuluh darah, PAS positif.</li></ul>
+</details>
+<details><summary>📌 Adenoma hipofisis anterior lain</summary>
+<ul><li>Adenoma gonadotrof agak sulit dikenali.</li><li>Thyrotroph merupakan tumor jarang, sekitar 1% adenoma hipofisis dalam materi.</li><li>Null cell adenoma: tumor nonfungsional; sitoplasma dengan mitokondria meningkat dan granula sekretorik sedikit/tidak ada.</li><li>25–30% tumor hipofisis dalam materi.</li><li>Karsinoma hipofisis sangat jarang, &lt;1%.</li></ul>
+</details>
+<details><summary>📌 Hipopituitarisme</summary>
+<p>Materi menyebut terjadi bila <b>75% atau lebih parenkim rusak/hilang</b> dan biasanya disertai disfungsi hipofisis posterior.</p>
+<p>Etiologi yang dicantumkan: tumor/masa dalam sella, trauma otak dan subarachnoid hemorrhage, pasca operasi/radiasi, apoplexy hipofisis, nekrosis iskemik hipofisis, Rathke cleft cyst, empty sella syndrome, genetic defects, lesi hipotalamus, serta gangguan inflamasi dan infeksi.</p>
+</details>
+</section>
+
+<section id="craniopharyngioma">
+<div class="section-title"><h2>🎯 Craniopharyngioma — Clinical Correlation</h2></div>
+<div class="callout"><b>Clue klinis inti:</b> tumor supraselar dapat menyebabkan <b>sakit kepala dan gangguan penglihatan</b>; pada anak dapat terjadi retardasi.</div>
+<div class="flow">
+<div class="node">Sisa vestigial Rathke pouch</div><div class="arrow">→</div>
+<div class="node">Tumor tumbuh lambat</div><div class="arrow">→</div>
+<div class="node">Massa supraselar</div><div class="arrow">→</div>
+<div class="node">Sakit kepala + gangguan penglihatan</div>
+</div>
+<p class="muted">Epidemiologi yang dicantumkan: anak 5–15 tahun dan dewasa sekitar 65 tahun.</p>
+<table>
+<tr><th>Fitur</th><th>Adamantinomatous</th><th>Papillary</th></tr>
+<tr><td>Histologi</td><td>Epitel skuamosa kompleks, palisading, compact, “wet keratin”</td><td>Epitel skuamosa kompleks well-differentiated</td></tr>
+<tr><td>Kalsifikasi</td><td><b>Distrofik kalsifikasi</b> khas</td><td>Jarang</td></tr>
+<tr><td>Kistik</td><td>Dapat ada; mengandung banyak kolesterol, fibrosis, radang kronis</td><td>Dapat/kadang tidak dominan; solid dan berkapsul dalam materi</td></tr>
+<tr><td>Keratin</td><td>Wet keratin</td><td>Nonkeratinizing</td></tr>
+<tr><td>Clue usia</td><td>Materi menekankan kelompok anak dalam epidemiologi umum</td><td>Hampir eksklusif dewasa pada gambar/deskripsi</td></tr>
+</table>
+<div class="callout trap"><b>⚠️ Exam trap:</b> pada soal histologi, kombinasi <b>palisading + wet keratin + kalsifikasi distrofik</b> mengarah ke tipe adamantinomatous berdasarkan materi.</div>
+</section>
+
+<section id="pancreas">
+<div class="section-title"><h2>🩺 Core Theory — Pankreas</h2></div>
+<div class="grid2">
+<div class="card"><h3>Anatomi &amp; fungsi</h3><p>Materi membagi pankreas menjadi fungsi <b>endokrin</b> dan <b>eksokrin</b>.</p>
+<table><tr><th>Komponen</th><th>Isi/fungsi yang tercantum</th></tr>
+<tr><td>Eksokrin</td><td>Acinar cells dan ducts</td></tr>
+<tr><td>Endokrin</td><td>Islet cells</td></tr>
+<tr><td>Islet cells</td><td>Insulin, glucagon, somatostatin, pancreatic polypeptide</td></tr>
+</table></div>
+<div class="card"><h3>Pankreatitis akut vs kronik</h3>
+<table><tr><th>Akut</th><th>Kronik</th></tr>
+<tr><td>Inflammation<br>Edema<br>Fat necrosis<br>Hemorrhage</td><td>Inflammation<br>Destruction of exocrine glands<br>Destruction of endocrine glands<br>Fibrosis</td></tr></table></div>
+</div>
+<details><summary>🔬 Gambaran mikroskopis chronic pancreatitis</summary>
+<ul><li>Fibrosis</li><li>Atrofi asinus</li><li>Duktus melebar dengan konkresi</li></ul>
+</details>
+<details><summary>⚠️ Komplikasi chronic pancreatitis</summary>
+<div class="grid2">
+<div><ul><li>Pseudocysts</li><li>Duct obstruction</li><li>Malabsorption</li></ul></div>
+<div><ul><li>Steatorrhea</li><li>Secondary diabetes</li><li>Carcinoma</li></ul></div>
+</div>
+</details>
+<div class="callout success"><b>Clinical reasoning:</b> jika vignette menekankan fibrosis + atrofi asinus + duktus melebar dengan konkresi, arahkan reasoning ke <b>chronic pancreatitis</b> sesuai materi.</div>
+</section>
+
+<section id="neoplasm">
+<div class="section-title"><h2>🧬 Neoplasma Pankreas</h2></div>
+<table>
+<tr><th>Kelompok</th><th>Entitas yang dicantumkan</th></tr>
+<tr><td>Cystic neoplasms</td><td>Serous cystadenomas; mucinous cystic neoplasms; intraductal papillary mucinous neoplasms</td></tr>
+<tr><td>Solid neoplasms</td><td>Pancreatic ductal adenocarcinoma; endocrine tumors</td></tr>
+</table>
+<div class="grid2" style="margin-top:14px">
+<div class="card"><h3>Pancreatic carcinoma</h3><ul><li>Materi menyebut sebagai fourth leading cause of cancer death in U.S.</li><li>Mutasi genetik yang dicantumkan: <b>K-RAS</b> dan <b>p53</b>.</li><li>5-year survival rate yang dicantumkan: <b>&lt;5%</b>.</li></ul></div>
+<div class="card"><h3>Risk factors</h3><ul><li>Tobacco abuse</li><li>Chronic pancreatitis</li><li>Hereditary pancreatitis</li><li>Diet tinggi lemak dan daging</li><li>Chemical carcinogen exposure</li><li>Pancreatic intraepithelial neoplasias (PanINs)</li></ul></div>
+</div>
+<div class="callout"><b>Histology:</b> pancreatic carcinoma menunjukkan <b>poorly formed glands in fibrotic stroma</b> pada materi.</div>
+<div class="card"><h3>Diagnosis yang dicantumkan</h3>
+<div class="flow"><div class="node">ERCP</div><div class="node">FNAb</div><div class="node">CT scan</div><div class="node">CA-19-9</div></div>
+</div>
+<div class="card"><h3>Metastasis</h3><p>Materi mencantumkan metastatic pancreatic carcinoma to liver dengan hematogenous metastases melalui <b>portal vein</b> dan <b>hepatic artery</b>.</p></div>
+</section>
+
+<section id="ddx">
+<div class="section-title"><h2>🔎 Pattern Recognition &amp; Pembeda</h2></div>
+<table>
+<tr><th>Jika vignette memberi...</th><th>Think first</th><th>Alasan</th></tr>
+<tr><td>Amenore + galaktore + infertilitas + libido ↓</td><td>Prolactinoma</td><td>Manifestasi klinis yang secara eksplisit tercantum.</td></tr>
+<tr><td>Gigantisme/akromegali</td><td>GH-cell adenoma</td><td>Clue hormon/manifestasi khas pada materi.</td></tr>
+<tr><td>Hiperkortisolisme/Cushing</td><td>ACTH-cell adenoma</td><td>Clue klinis yang tercantum.</td></tr>
+<tr><td>Hipopituitarisme + kerusakan parenkim ≥75%</td><td>Hypopituitarism</td><td>Ambang kerusakan disebut langsung dalam materi.</td></tr>
+<tr><td>Sakit kepala + gangguan penglihatan + massa supraselar</td><td>Craniopharyngioma</td><td>Gambaran klinis dan lokasi sesuai materi.</td></tr>
+<tr><td>Wet keratin + palisading + kalsifikasi distrofik</td><td>Adamantinomatous craniopharyngioma</td><td>Trias morfologi paling menonjol.</td></tr>
+<tr><td>Epitel skuamosa nonkeratinizing + hampir eksklusif dewasa + tanpa kalsifikasi</td><td>Papillary craniopharyngioma</td><td>Deskripsi histologis pada materi.</td></tr>
+<tr><td>Fibrosis + atrofi asinus + duktus melebar dengan konkresi</td><td>Chronic pancreatitis</td><td>Gambaran mikroskopis langsung.</td></tr>
+<tr><td>Poorly formed glands + fibrotic stroma</td><td>Pancreatic ductal carcinoma</td><td>Gambaran mikroskopis langsung.</td></tr>
+</table>
+</section>
+
+<section id="quiz">
+<div class="section-title"><h2>🧠 Interactive Clinical Quiz</h2><span id="score" class="score">Skor: 0/8</span></div>
+<p class="muted">Soal disusun dari informasi file. Distractor dibuat berdasarkan konsep yang berdekatan dalam materi, tanpa menambahkan fakta klinis di luar sumber.</p>
+<div id="quizContainer"></div>
+</section>
+
+<section id="quick">
+<div class="section-title"><h2>⚡ Jika Cuma Punya 5 Menit</h2></div>
+<div class="grid2">
+<div class="card"><h3>Hipofisis</h3>
+<ul><li><b>Somatotroph → GH</b> → gigantisme/akromegali.</li><li><b>Lactotroph → Prl</b> → prolaktinoma → amenore/galaktore/infertilitas/libido ↓.</li><li><b>Corticotroph → ACTH, MSH</b> → ACTH adenoma → Cushing.</li><li>Mikroadenoma &lt;10 mm; makroadenoma &gt;10 mm.</li><li>Hipopituitarisme: ≥75% parenkim rusak/hilang.</li></ul></div>
+<div class="card"><h3>Craniopharyngioma</h3>
+<ul><li>Sakit kepala + gangguan penglihatan.</li><li>Berasal dari sisa vestigial Rathke pouch.</li><li><b>Adamantinomatous:</b> palisading + wet keratin + kalsifikasi distrofik.</li><li><b>Papillary:</b> well-differentiated nonkeratinizing squamous epithelium; jarang kalsifikasi.</li></ul></div>
+<div class="card"><h3>Pankreatitis</h3>
+<ul><li>Akut: inflamasi, edema, fat necrosis, hemorrhage.</li><li>Kronik: inflamasi + destruksi kelenjar eksokrin/endokrin + fibrosis.</li><li>Kronik mikros: fibrosis + atrofi asinus + duktus melebar dengan konkresi.</li><li>Komplikasi: pseudokista, obstruksi duktus, malabsorpsi, steatorrhea, diabetes sekunder, carcinoma.</li></ul></div>
+<div class="card"><h3>Pancreatic ductal carcinoma</h3>
+<ul><li>Risk factors: tobacco, chronic pancreatitis, hereditary pancreatitis, diet tinggi lemak/daging, chemical carcinogens, PanIN.</li><li>Mutasi: K-RAS, p53.</li><li>Mikro: poorly formed glands in fibrotic stroma.</li><li>Diagnosis yang dicantumkan: ERCP, FNAb, CT scan, CA-19-9.</li><li>Metastasis hematogen ke liver melalui portal vein/hepatic artery.</li></ul></div>
+</div>
+<div class="callout"><b>🔑 Exam Pearl:</b> pada soal patologi, gabungkan <b>clinical clue + lokasi + morfologi makro/mikro</b>. Jangan menentukan jawaban hanya dari satu kata.</div>
+</section>
+
+<section>
+<div class="section-title"><h2>📌 Active Recall</h2></div>
+<details><summary>Apa 5 sel adenohipofisis dan hormonnya?</summary><p>Somatotrophs→GH; Lactotrophs→Prl; Corticotrophs→ACTH, MSH; Thyrotrophs→TSH; Gonadotrophs→FSH,LH.</p></details>
+<details><summary>Apa pembeda ukuran mikroadenoma dan makroadenoma?</summary><p>Mikroadenoma &lt;10 mm; makroadenoma &gt;10 mm.</p></details>
+<details><summary>Apa clue utama chronic pancreatitis secara mikroskopis?</summary><p>Fibrosis, atrofi asinus, dan duktus melebar dengan konkresi.</p></details>
+<details><summary>Apa gambaran khas adamantinomatous craniopharyngioma?</summary><p>Palisading, compact squamous epithelium, wet keratin, dan kalsifikasi distrofik; dapat disertai kista dengan kolesterol, fibrosis, dan radang kronis.</p></details>
+<details><summary>Apa gambaran histologis pancreatic ductal carcinoma?</summary><p>Poorly formed glands in fibrotic stroma.</p></details>
+</section>
+</main>
+<button class="quick" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<script>
+const questions=[
+{q:"Seorang pasien perempuan usia dewasa mengalami amenore, galaktore, infertilitas, dan penurunan libido. Berdasarkan pola manifestasi pada materi, diagnosis paling tepat adalah...",o:["GH-cell adenoma","Prolactinoma","ACTH-cell adenoma","Null cell adenoma","Papillary craniopharyngioma"],a:1,e:"Manifestasi amenore, galaktore, infertilitas, dan libido ↓ tercantum pada prolaktinoma."},
+{q:"Seorang pasien menunjukkan gigantisme dan akromegali. Lesi hipofisis yang paling sesuai dengan materi adalah...",o:["Prolactinoma","GH-cell adenoma","ACTH-cell adenoma","Thyrotroph adenoma","Null cell adenoma"],a:1,e:"GH-cell adenoma dikaitkan dengan gigantisme dan akromegali."},
+{q:"Pada pemeriksaan mikroskopis suatu adenoma hipofisis ditemukan sel poligonal yang seragam, tersusun dalam lembaran/papila, dengan monomorfisme dan hilangnya jaringan retikulin. Temuan tersebut paling sesuai dengan...",o:["Adenoma hipofisis","Chronic pancreatitis","Papillary craniopharyngioma","Pancreatic ductal carcinoma","Pankreatitis akut"],a:0,e:"Materi menjelaskan pola tersebut sebagai gambaran mikroskopis adenoma hipofisis."},
+{q:"Seorang pasien mengalami sakit kepala dan gangguan penglihatan akibat tumor supraselar yang tumbuh lambat. Tumor berasal dari sisa vestigial Rathke pouch. Diagnosis paling sesuai adalah...",o:["Prolactinoma","Craniopharyngioma","GH-cell adenoma","Chronic pancreatitis","Pancreatic ductal carcinoma"],a:1,e:"Craniopharyngioma berasal dari sisa vestigial Rathke pouch dan dapat menimbulkan sakit kepala serta gangguan penglihatan."},
+{q:"Pada suatu tumor hipofisis ditemukan epitel skuamosa kompleks dengan palisading, wet keratin, dan kalsifikasi distrofik. Tipe tumor yang paling sesuai adalah...",o:["Papillary craniopharyngioma","Adamantinomatous craniopharyngioma","Prolactinoma","ACTH-cell adenoma","Null cell adenoma"],a:1,e:"Palisading + wet keratin + kalsifikasi distrofik adalah kombinasi khas yang dicantumkan untuk tipe adamantinomatous."},
+{q:"Pemeriksaan histologi pankreas menunjukkan fibrosis, atrofi asinus, serta duktus melebar dengan konkresi. Diagnosis paling tepat adalah...",o:["Pankreatitis akut","Chronic pancreatitis","Pancreatic ductal carcinoma","Serous cystadenoma","Endocrine tumor"],a:1,e:"Ketiga temuan tersebut tercantum sebagai gambaran mikroskopis chronic pancreatitis."},
+{q:"Seorang pasien memiliki riwayat tobacco abuse dan chronic pancreatitis. Bila ditemukan poorly formed glands dalam fibrotic stroma, diagnosis yang paling sesuai adalah...",o:["Pancreatic ductal adenocarcinoma","Chronic pancreatitis","Mucinous cystic neoplasm","Prolactinoma","Craniopharyngioma"],a:0,e:"Risk factor tersebut tercantum untuk pancreatic ductal carcinoma, sedangkan gambaran mikroskopisnya adalah poorly formed glands in fibrotic stroma."},
+{q:"Manakah kombinasi yang paling tepat untuk pancreatic ductal carcinoma berdasarkan materi?",o:["K-RAS/p53; ERCP, FNAb, CT scan, CA-19-9","GH/Prl; CT scan saja","ACTH/MSH; FNAb saja","Insulin/glucagon; ERCP saja","FSH/LH; CA-19-9 saja"],a:0,e:"Materi mencantumkan mutasi K-RAS dan p53 serta diagnosis melalui ERCP, FNAb, CT scan, dan CA-19-9."}
+];
+let score=0,answered=Array(questions.length).fill(false);
+const qc=document.getElementById("quizContainer");
+questions.forEach((x,i)=>{
+const d=document.createElement("div");d.className="card quiz";
+d.innerHTML=`<span class="badge high">QUESTION ${i+1}</span><h3>${x.q}</h3>
+<div>${x.o.map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(65+j)}. ${o}</label>`).join("")}</div>
+<button class="btn primary" onclick="check(${i},this)">Submit</button>
+<div class="feedback" id="f${i}"></div>`;
+qc.appendChild(d);
+});
+function check(i,btn){
+if(answered[i])return;
+const chosen=document.querySelector(`input[name="q${i}"]:checked`);
+const f=document.getElementById("f"+i);
+if(!chosen){f.className="feedback show";f.innerHTML="Pilih satu jawaban terlebih dahulu.";return}
+answered[i]=true;const val=+chosen.value;
+if(val===questions[i].a){score++;f.innerHTML=`<span class="check"><b>✅ Correct.</b></span> ${questions[i].e}`}else{
+f.innerHTML=`<span class="wrong"><b>❌ Belum tepat.</b></span> Jawaban benar: <b>${String.fromCharCode(65+questions[i].a)}. ${questions[i].o[questions[i].a]}</b><br>${questions[i].e}`;
+}
+f.className="feedback show";document.getElementById("score").textContent=`Skor: ${score}/${questions.length}`;btn.disabled=true;
+}
+function toggleTheme(){document.body.dataset.theme=document.body.dataset.theme==="dark"?"":"dark";localStorage.setItem("theme",document.body.dataset.theme)}
+if(localStorage.getItem("theme")==="dark")document.body.dataset.theme="dark";
+window.addEventListener("scroll",()=>{const h=document.documentElement.scrollHeight-innerHeight;document.getElementById("progressBar").style.width=(h>0?(scrollY/h*100):0)+"%"});
+</script>
+</body>
+</html>
